@@ -1,0 +1,185 @@
+Last login: Mon Apr 10 15:17:45 on ttys001
+manasabduganiuulu@Manass-MacBook-Pro ~ % /Library/PostgreSQL/15/scripts/runpsql.sh; exit
+Server [localhost]:
+Database [postgres]:
+Port [5432]:
+Username [postgres]: postgres
+Password for user postgres:
+psql (15.2)
+Type "help" for help.
+
+postgres=# create table country;
+ERROR:  syntax error at or near ";"
+LINE 1: create table country;
+                            ^
+postgres=# create table country
+postgres-# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner
+--------+-----------------------+----------+----------
+ public | cart                  | table    | postgres
+ public | cart_id_seq           | sequence | postgres
+ public | client                | table    | postgres
+ public | client_id_seq         | sequence | postgres
+ public | director              | table    | postgres
+ public | director_id_seq       | sequence | postgres
+ public | discount              | table    | postgres
+ public | discount_id_seq       | sequence | postgres
+ public | employee              | table    | postgres
+ public | employee_id_seq       | sequence | postgres
+ public | faculty               | table    | postgres
+ public | faculty_id_seq        | sequence | postgres
+ public | groups_uni            | table    | postgres
+ public | groups_uni_id_seq     | sequence | postgres
+ public | lessons               | table    | postgres
+ public | lessons_id_seq        | sequence | postgres
+ public | owner                 | table    | postgres
+ public | owner_id_seq          | sequence | postgres
+ public | product               | table    | postgres
+ public | product_id_seq        | sequence | postgres
+ public | service               | table    | postgres
+ public | service_id_seq        | sequence | postgres
+ public | shop                  | table    | postgres
+ public | shop_id_seq           | sequence | postgres
+ public | student_clinic        | table    | postgres
+ public | student_clinic_id_seq | sequence | postgres
+ public | student_hostel        | table    | postgres
+ public | student_hostel_id_seq | sequence | postgres
+ public | students              | table    | postgres
+ public | students_id_seq       | sequence | postgres
+ public | stuff                 | table    | postgres
+ public | stuff_id_seq          | sequence | postgres
+ public | teachers              | table    | postgres
+ public | teachers_id_seq       | sequence | postgres
+ public | type_product          | table    | postgres
+ public | type_product_id_seq   | sequence | postgres
+ public | university            | table    | postgres
+ public | university_id_seq     | sequence | postgres
+ public | web_site              | table    | postgres
+ public | web_site_id_seq       | sequence | postgres
+(40 rows)
+
+postgres-# create table country(id serial primary key,name varchar not null,language varchar not null,poppulation int not null)
+postgres-# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner
+--------+-----------------------+----------+----------
+ public | cart                  | table    | postgres
+ public | cart_id_seq           | sequence | postgres
+ public | client                | table    | postgres
+ public | client_id_seq         | sequence | postgres
+ public | director              | table    | postgres
+ public | director_id_seq       | sequence | postgres
+ public | discount              | table    | postgres
+ public | discount_id_seq       | sequence | postgres
+ public | employee              | table    | postgres
+ public | employee_id_seq       | sequence | postgres
+ public | faculty               | table    | postgres
+ public | faculty_id_seq        | sequence | postgres
+ public | groups_uni            | table    | postgres
+ public | groups_uni_id_seq     | sequence | postgres
+ public | lessons               | table    | postgres
+ public | lessons_id_seq        | sequence | postgres
+ public | owner                 | table    | postgres
+ public | owner_id_seq          | sequence | postgres
+ public | product               | table    | postgres
+ public | product_id_seq        | sequence | postgres
+ public | service               | table    | postgres
+postgres-#
+postgres-# create table country(id serial primary key,name varchar not null,language varchar not null,poppulation int not null)
+postgres-#
+postgres-# create table country(id serial primary key,name varchar not null,language varchar not null,poppulation int not null);
+ERROR:  syntax error at or near "create"
+LINE 2: create table country(id serial primary key,name varchar not ...
+        ^
+postgres=# create table country(id serial primary key,name varchar not null,language varchar not null,poppulation int not null)
+postgres-# ;
+CREATE TABLE
+postgres=# insert into country(name ,language,population) values ('Kyrgyzstan','Kyrgyz',7000000)
+postgres-# ;
+ERROR:  column "population" of relation "country" does not exist
+LINE 1: insert into country(name ,language,population) values ('Kyrg...
+                                           ^
+postgres=# insert into country(name ,language,poppulation) values ('Kyrgyzstan','Kyrgyz',7000000)
+;
+INSERT 0 1
+postgres=# ;
+postgres=# select * from country
+postgres-# ;
+ id |    name    | language | poppulation
+----+------------+----------+-------------
+  1 | Kyrgyzstan | Kyrgyz   |     7000000
+(1 row)
+
+postgres=# create table provincy(id serial primary key,name varchar not null,population varchar not null,area numeric not null,country_id integer references country(id))
+postgres-# ;
+CREATE TABLE
+postgres=# insert into provincy(name,population,area,country_id) values('Bishkek',239102,28.384,1)
+postgres-# ;
+INSERT 0 1
+postgres=# create table city(id serial primary key,name varchar not null, area numeric not null,provincy_id integer references provincy(id))
+postgres-# ;
+CREATE TABLE
+postgres=# insert into city(name,area,provincy_id)values ('Osh',435.4,1)
+postgres-# ;
+INSERT 0 1
+postgres=# create table micro_region(id serial primary key,name varchar not null,population varchar not null,city_id integer references city(id))
+postgres-# ;
+CREATE TABLE
+postgres=# insert into micro_region(name,population,city_id)values ('Birirnchi mai','48445',1)
+postgres-# ;
+INSERT 0 1
+postgres=# create table region(id primary key,name varchar not null,area numeric not null,provincy_id integer references provincy(id))
+postgres-# ;
+ERROR:  syntax error at or near "primary"
+LINE 1: create table region(id primary key,name varchar not null,are...
+                               ^
+postgres=# create table region(id serial  primary key,name varchar not null,area
+ numeric not null,provincy_id integer references provincy(id))
+;
+CREATE TABLE
+postgres=# insert into region (name,area,provincy_id)values ('Sverlovskiy',43.2,1)
+postgres-# ;
+INSERT 0 1
+postgres=# create table vilage(id serial primary key, name varchar not null, population varchar not null,region_id integer references region(id),city_id integer reference city(id))
+postgres-# ;
+ERROR:  syntax error at or near "reference"
+LINE 1: ..._id integer references region(id),city_id integer reference ...
+                                                             ^
+postgres=# create table vilage(id serial primary key, name varchar not null, population varchar not null,region_id integer references region(id),city_id integer references city(id))
+postgres-# ;
+CREATE TABLE
+postgres=# insert into vilage(name,population,region_id,city_id)values ('Osh','4343',1,1)
+postgres-# ;
+INSERT 0 1
+postgres=# create table school(id serial primary key,name varchar not null,description varchar not null ,vilage_id integer references vilage(id))
+postgres-# ;
+CREATE TABLE
+postgres=# insert into school (name ,description,vilage_id)values('Ala too','Kyrgyz tilduu mektep',1)
+postgres-# ;
+INSERT 0 1
+postgres=# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner
+--------+-----------------------+----------+----------
+ public | cart                  | table    | postgres
+ public | cart_id_seq           | sequence | postgres
+ public | city                  | table    | postgres
+ public | city_id_seq           | sequence | postgres
+ public | client                | table    | postgres
+ public | client_id_seq         | sequence | postgres
+ public | country               | table    | postgres
+ public | country_id_seq        | sequence | postgres
+ public | director              | table    | postgres
+ public | director_id_seq       | sequence | postgres
+ public | discount              | table    | postgres
+ public | discount_id_seq       | sequence | postgres
+ public | employee              | table    | postgres
+ public | employee_id_seq       | sequence | postgres
+ public | faculty               | table    | postgres
+ public | faculty_id_seq        | sequence | postgres
+ public | groups_uni            | table    | postgres
+ public | groups_uni_id_seq     | sequence | postgres
+ public | lessons               | table    | postgres
+ public | lessons_id_seq        | sequence | postgres
+:
